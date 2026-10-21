@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASTRA EYE 3D | Near-Earth Object Observatory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand-mark"><span class="brand-orbit"></span><span class="brand-dot"></span></div>
+    <div class="brand-copy"><div class="brand-name">ASTRA<span> EYE</span> <b>3D</b></div><div class="brand-sub">NEAR-EARTH OBJECT OBSERVATORY</div></div>
+    <div class="top-center"><span class="live-dot"></span><span id="systemStatus">SYSTEM INITIALIZING</span><span class="top-divider"></span><span id="utcClock">UTC --:--:--</span></div>
+    <div class="top-right"><span class="mode-chip">ORBITAL MONITOR</span><span class="status-square"></span></div>
+  </header>
+
+  <main class="dashboard">
+    <aside class="left-rail">
+      <section class="panel mission-panel">
+        <div class="panel-head"><span class="eyebrow">MISSION CONTROL</span><span class="tiny-icon">◈</span></div>
+        <div class="mission-title">Object surveillance</div>
+        <div class="mission-copy">Near-Earth object situational awareness and observation console.</div>
+        <div class="metric-grid">
+           <span class="metric-label">JPL POSITIONS</span>
+           <strong id="jplCoverage" class="small-value">0 / 0</strong>
+           <small id="jplCoverageNote">Waiting for catalogue</small>
+          <div class="metric"><span class="metric-label">NASA RECORDS</span><strong id="objectCount">—</strong><small>Raw feed records</small></div>
+          <div class="metric"><span class="metric-label">HAZARD FLAGGED</span><strong id="hazardCount" class="amber">—</strong><small>source classification</small></div>
+          <div class="metric"><span class="metric-label">DATA LINK</span><strong id="dataLink" class="small-value">WAIT</strong><small id="dataUpdated">awaiting source</small></div>
+          <div class="metric"><span class="metric-label">CAMERA</span><strong id="cameraState" class="small-value">OFFLINE</strong><small>browser local</small></div>
+        </div>
+        <button class="primary-btn" id="refreshBtn"><span>↻</span> REFRESH ORBITAL DATA</button>
+      </section>
+
+      <section class="panel target-panel">
+        <div class="panel-head"><span class="eyebrow">UNIQUE TARGETS</span><span class="counter" id="targetCount">00</span></div>
+        <div class="search-wrap"><span>⌕</span><input id="searchInput" placeholder="Search target name or ID..." autocomplete="off"><button type="button" id="jplSearchBtn" aria-label="Search JPL Small-Body Database" style="flex-shrink:0;padding:6px 8px;background:#10323d;color:#a4f6fa;border:1px solid #2e9dac;border-radius:3px;font:8px var(--mono);cursor:pointer">SEARCH JPL</button><button type="button" id="clearSearchBtn" aria-label="Clear search" style="flex-shrink:0;padding:6px 8px;background:#101c28;color:#9bb0c2;border:1px solid #25394a;border-radius:3px;font:8px var(--mono);cursor:pointer">CLEAR</button></div>
+        <div class="target-list" id="targetList"><div class="empty-state">Connecting to NASA NeoWs…</div></div>
+        <div id="onlineSearchResults" aria-live="polite" style="margin-top:8px;font-size:12px"></div>
+        <div class="panel-foot">SOURCE <span>NASA / JPL NeoWs</span></div>
+      </section>
+
+      <section class="panel source-panel">
+        <div class="panel-head"><span class="eyebrow">SOURCE INTEGRITY</span><span class="source-badge">LIVE API</span></div>
+        <div class="source-row"><span class="source-led"></span><div><b>NASA NeoWs</b><small>Near-Earth Object feed</small></div><span id="nasaSourceState" class="source-state">PENDING</span></div>
+        <div class="source-row"><span class="source-led muted"></span><div><b>JPL CAD API</b><small>Close-approach records</small></div><button class="text-btn" id="jplBtn">QUERY</button></div>
+        <div class="integrity-note"><span>i</span> 3D positions are schematic, not precision ephemerides.</div>
+      </section>
+    </aside>
+
+    <section class="center-column">
+      <section class="visual-panel">
+        <div class="visual-top">
+          <div><div class="eyebrow">SPATIAL TRACKING ENVIRONMENT</div><div class="visual-title">Orbital field <span class="subtle">/ Earth-centric overview</span></div></div>
+          <div class="visual-tools"><span class="tool-chip"><i class="green-dot"></i> 3D SCHEMATIC</span><button id="resetView" class="icon-btn" title="Reset view">⟳</button><button id="toggleLabels" class="icon-btn" title="Toggle labels">T</button><button id="trailToggle" class="icon-btn" title="Show or hide JPL trail">TRAIL ON</button></div>
+        </div>
+        <div id="spaceCanvas"><div class="scene-loading" id="sceneLoading"><div class="loading-ring"></div><span>INITIALIZING SPATIAL ENGINE</span></div><div class="scene-vignette"></div><div class="scene-coordinates">FRAME: EARTH-CENTRIC<br>RENDER: THREE.JS</div><div class="scene-scale">SCHEMATIC — NOT TO SCALE</div></div>
+      
+<div class="scene-legend">
+  <span><i class="legend-earth"></i> EARTH</span>
+  <span><i class="legend-orbit"></i> ILLUSTRATIVE ORBIT</span>
+  <span><i class="legend-target"></i> SELECTED TARGET</span>
+  <span><i class="legend-hazard"></i> NASA HAZARD FLAG</span>
+  <span><i class="legend-jpl"></i> JPL POSITION LOADED</span>
+  <span title="External JPL lookup marker; displayed distance is compressed">
+    <i style="display:inline-block;width:9px;height:9px;background:#ff63d8;border-radius:50%;margin-right:5px;box-shadow:0 0 6px #ff63d8"></i>
+    EXTERNAL JPL TARGET · DISTANCE COMPRESSED
+  </span>
+  <span><i class="legend-fallback"></i> SCHEMATIC FALLBACK</span>
+</div>
+
+      </section>
+
+      <section class="lower-grid">
+        <div class="panel selected-panel">
+          <div class="panel-head"><span class="eyebrow">SELECTED OBJECT</span><span id="selectedFlag" class="flag neutral">NO TARGET</span></div>
+          <div class="selected-name" id="selectedName">Select an asteroid</div>
+          <div class="selected-id" id="selectedId">Choose an object from the catalogue to inspect source data.</div>
+          <div class="selected-id" id="positionSourceStatus">Position source: checking...</div>
+          <div class="selected-id" id="jplEarthDistance">JPL Earth distance: waiting for position...</div>
+          <div class="selected-stats">
+            <div><small>MISS DISTANCE</small><b id="missDistance">—</b><em>km</em></div>
+            <div><small>RELATIVE VELOCITY</small><b id="velocity">—</b><em>km/s</em></div>
+            <div><small>EST. DIAMETER</small><b id="diameter">—</b><em>meters</em></div>
+          </div>
+          <div class="selected-actions"><a id="jplLink" href="https://cneos.jpl.nasa.gov/" target="_blank" rel="noreferrer">OPEN NASA / JPL RECORD ↗</a><span id="approachDate">APPROACH DATE: —</span></div>
+        </div>
+        <div class="panel telemetry-panel">
+          <div class="panel-head"><span class="eyebrow">OBSERVATION TELEMETRY</span><span class="rec-indicator"><i></i> LOCAL</span></div>
+          <div class="telemetry-line"><span>Camera stream</span><b id="telemetryCamera">Not connected</b></div>
+          <div class="telemetry-line"><span>Capture status</span><b id="telemetryCapture">Standby</b></div>
+          <div class="telemetry-line"><span>Orbital source</span><b id="telemetrySource">Awaiting API</b></div>
+          <div class="telemetry-line"><span>Detection engine</span><b id="detectorEngineStatus" class="amber-text">Experimental API</b></div>
+          <div class="telemetry-line"><span>ESA FITS experiment</span><b id="esaDetectionStatus" class="amber-text">Loading report…</b></div>
+          <div class="telemetry-disclaimer" id="esaDetectionDetails">Checking local experiment report.</div>
+          <div class="telemetry-disclaimer">No image-based asteroid detections are claimed by this prototype.</div>
+        </div>
+      </section>
+    </section>
+
+    <aside class="right-rail">
+      <section class="panel camera-panel">
+        <div class="panel-head"><span class="eyebrow">OPTICAL OBSERVATION</span><span class="camera-live" id="cameraBadge">NO SIGNAL</span></div>
+        <div class="camera-screen">
+          <video id="cameraVideo" autoplay playsinline muted></video>
+          <div class="camera-placeholder" id="cameraPlaceholder"><div class="camera-reticle"><span></span></div><b>OPTICAL SENSOR</b><small>Awaiting camera connection</small><small class="cam-lock">LOCAL DEVICE / PERMISSION REQUIRED</small></div>
+          <div class="camera-overlay"><span>CAM 01</span><span id="cameraTime">--:--:--</span></div>
+          <div class="crosshair"></div>
+        </div>
+        <div class="camera-controls">
+          <label class="select-label">INPUT DEVICE<select id="cameraSelect"><option value="">Select camera…</option></select></label>
+          <button class="primary-btn camera-connect" id="connectCamera">CONNECT CAMERA</button>
+          <div class="button-row"><button class="secondary-btn" id="captureBtn" disabled>◎ CAPTURE FRAME</button><button class="secondary-btn" id="disconnectCamera" disabled>DISCONNECT</button></div>
+          <div class="camera-note">Camera stays in this browser. Captures download to your device.</div>
+        </div>
+      </section>
+
+      <section class="panel capture-panel">
+        <div class="panel-head"><span class="eyebrow">CAPTURE ARCHIVE</span><div class="archive-head-actions"><button id="clearCaptureArchive" class="capture-action" type="button">CLEAR ARCHIVE</button><span id="captureCount" class="counter">00</span></div></div>
+        <div id="captureArchive" class="capture-archive"><div class="archive-empty">No local captures yet.<br>Connect a camera to begin.</div></div>
+      </section>
+
+
+      <section class="panel detector-panel">
+        <div class="panel-head">
+          <span class="eyebrow">THREE-FRAME TRACKING EXPERIMENT</span>
+          <span id="detectorBadge" class="detector-badge">READY</span>
+        </div>
+        <p class="detector-intro">
+          Select three time-separated images with matching dimensions.
+          Only the selected files are uploaded for experimental analysis.
+        </p>
+        <div class="detector-file-list">
+          <label class="select-label">FRAME 01
+            <input id="detectorFrame1" class="detector-file" type="file"
+              accept=".png,.jpg,.jpeg,.tif,.tiff,image/png,image/jpeg,image/tiff">
+          </label>
+          <label class="select-label">FRAME 02
+            <input id="detectorFrame2" class="detector-file" type="file"
+              accept=".png,.jpg,.jpeg,.tif,.tiff,image/png,image/jpeg,image/tiff">
+          </label>
+          <label class="select-label">FRAME 03
+            <input id="detectorFrame3" class="detector-file" type="file"
+              accept=".png,.jpg,.jpeg,.tif,.tiff,image/png,image/jpeg,image/tiff">
+          </label>
+        </div>
+        <button class="primary-btn detector-run" id="analyzeFramesBtn" type="button">
+          ANALYZE THREE FRAMES
+        </button>
+        <div id="detectorStatus" class="detector-status" role="status" aria-live="polite">
+          Awaiting three image files.
+        </div>
+        <div id="detectorResults" class="detector-results" aria-live="polite">
+          <div class="detector-empty">Alignment and candidate-track results will appear here.</div>
+        </div>
+        <p class="detector-warning">
+          EXPERIMENTAL ONLY - moving candidates are not confirmed asteroids.
+          Use calibrated telescope exposures and independent astrometric verification.
+          Webcam images are not suitable for astronomical asteroid identification.
+        </p>
+      </section>
+
+      <section class="panel activity-panel">
+        <div class="panel-head"><span class="eyebrow">SYSTEM EVENT LOG</span><span class="log-live">● LIVE</span></div>
+        <div id="eventLog" class="event-log"></div>
+      </section>
+    </aside>
+  </main>
+  <footer><span>ASTRA EYE 3D <b>v1.0.0</b></span><span>FOR RESEARCH & EDUCATIONAL USE · NOT A COLLISION WARNING SERVICE</span><span id="footerTime">LOCAL SYSTEM</span></footer>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module" src="/static/app.js"></script>
+
+</body></html>

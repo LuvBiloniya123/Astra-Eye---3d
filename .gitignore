@@ -1,0 +1,54 @@
+﻿# Python environments
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Test and tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local secrets and environment settings
+.env
+!.env.example
+
+# Logs
+*.log
+
+# Additional local environments and caches
+.venv-astro/
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+
+# Local backups and generated build files
+backups/
+dist/
+*.bak
+*.backup
+app_backup*
+app.py.*
+*.log
+
+# Large observational datasets
+detection/*.fits
+detection/*.fit
+detection/*.fts
+detection/*.fits.fz
+
+# Local secrets
+.env.*
+!.env.example
+
+# Exclude local backup copies
+static/*.backup*
+static/*.bak*
+static/*.pre-*
+static/*.step*-backup
+static/*.verified-*
+static/*.working-*
+static/*.audit-backup*
+static/*.coverage-backup*
+static/*.trail-*

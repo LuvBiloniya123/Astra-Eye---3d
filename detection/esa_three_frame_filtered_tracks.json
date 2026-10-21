@@ -1,0 +1,50 @@
+{
+  "method": "Edge-filtered, timestamp-aware linear track association",
+  "files": [
+    "J04_01_20151009200014.fits",
+    "J04_01_20151009200150.fits",
+    "J04_01_20151009200325.fits"
+  ],
+  "edge_exclusion_pixels": 50,
+  "source_counts_before_filter": [
+    224,
+    218,
+    235
+  ],
+  "source_counts_after_filter": [
+    113,
+    119,
+    118
+  ],
+  "prediction_tolerance_px": 2.0,
+  "candidate_track_count": 1,
+  "candidate_tracks": [
+    {
+      "positions_px": [
+        {
+          "x": 919.041,
+          "y": 292.137
+        },
+        {
+          "x": 919.692,
+          "y": 292.31
+        },
+        {
+          "x": 919.098,
+          "y": 292.214
+        }
+      ],
+      "step_lengths_px": [
+        0.674,
+        0.602
+      ],
+      "intervals_seconds": [
+        95.16,
+        95.182
+      ],
+      "prediction_error_px": 1.274,
+      "status": "UNCONFIRMED CANDIDATE TRACK"
+    }
+  ],
+  "warning": "Exploratory tracks only. Edge filtering and linear consistency do not establish asteroid identity. Image registration, source quality checks, astrometry, and known-object comparison remain."
+}
