@@ -222,12 +222,16 @@ async function loadExternalHorizonsTrail(designation, name) {
     const material = new THREE.LineBasicMaterial({
       color: 0xff63d8,
       transparent: true,
-      opacity: 0.8
+      opacity: 1.0,
+      depthTest: false,
+      depthWrite: false
     });
 
     const line = new THREE.Line(geometry, material);
     line.name = 'External JPL 24-hour schematic trajectory';
     line.visible = trailGroup.visible;
+    line.renderOrder = 1000;
+    line.frustumCulled = false;
     externalTargetGroup.add(line);
 
     log(
