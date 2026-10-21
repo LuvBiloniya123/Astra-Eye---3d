@@ -227,11 +227,12 @@ async function loadExternalHorizonsTrail(designation, name) {
 
     const line = new THREE.Line(geometry, material);
     line.name = 'External JPL 24-hour schematic trajectory';
+    line.visible = trailGroup.visible;
     externalTargetGroup.add(line);
 
     log(
       'External JPL trajectory loaded: ' + targetName +
-      ' ? ' + data.samples.length + ' samples'
+      ' | Samples: ' + data.samples.length
     );
   } catch (error) {
     log(
@@ -550,7 +551,25 @@ new ResizeObserver(()=>{const w=host.clientWidth,h=host.clientHeight;camera.aspe
 $('sceneLoading').style.display='none';
 $('resetView').onclick=()=>{camera.position.set(0,12,28);controls.target.set(0,0,0);controls.update()};
 $('toggleLabels').onclick=()=>{state.labels=!state.labels;drawObjects();log('Object labels '+(state.labels?'enabled':'hidden'))};
-$('trailToggle').onclick=()=>{trailGroup.visible=!trailGroup.visible;$('trailToggle').textContent=trailGroup.visible?'TRAIL ON':'TRAIL OFF';log('JPL trail '+(trailGroup.visible?'shown':'hidden'))};
+$('trailToggle').onclick = () => {
+  trailGroup.visible = !trailGroup.visible;
+
+  const externalTrail = externalTargetGroup.children.find(
+    child => child.name === 'External JPL 24-hour schematic trajectory'
+  );
+
+  if (externalTrail) {
+    externalTrail.visible = trailGroup.visible;
+  }
+
+  $('trailToggle').textContent = trailGroup.visible ? 'TRAIL ON' : 'TRAIL OFF';
+
+  log(
+    'NASA trail ' + (trailGroup.visible ? 'shown' : 'hidden') +
+    (externalTrail ? ' | External JPL trail ' +
+      (externalTrail.visible ? 'shown' : 'hidden') : ' | No external JPL trail loaded')
+  );
+};
 renderer.domElement.addEventListener('click', e => {
   const r = renderer.domElement.getBoundingClientRect();
   pointer.x = ((e.clientX - r.left) / r.width) * 2 - 1;
