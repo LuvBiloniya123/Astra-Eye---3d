@@ -218,6 +218,13 @@ async function loadExternalHorizonsTrail(designation, name) {
       return direction.normalize().multiplyScalar(radius);
     });
 
+    // Schematic visibility enhancement; not a physical-scale orbit.
+    const trailAnchor = points[0].clone();
+    const trailVisualScale = 25;
+    for (let j = 1; j < points.length; j++) {
+      points[j].sub(trailAnchor).multiplyScalar(trailVisualScale).add(trailAnchor);
+    }
+
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     const material = new THREE.LineBasicMaterial({
       color: 0xff63d8,
