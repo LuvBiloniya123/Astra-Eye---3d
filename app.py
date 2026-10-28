@@ -370,8 +370,8 @@ async def horizons_position(designation: str):
         "VEC_TABLE": "1",
         "VEC_LABELS": "NO",
         "CSV_FORMAT": "YES",
-        "START_TIME": now.strftime("%Y-%m-%d %H:%M"),
-        "STOP_TIME": stop.strftime("%Y-%m-%d %H:%M"),
+        "START_TIME": f"'{now.strftime('%Y-%b-%d %H:%M')}'",
+        "STOP_TIME": f"'{stop.strftime('%Y-%b-%d %H:%M')}'",
         "STEP_SIZE": "1 m",
     }
 
@@ -497,8 +497,8 @@ async def horizons_trail(designation: str):
         "VEC_TABLE": "1",
         "VEC_LABELS": "NO",
         "CSV_FORMAT": "YES",
-        "START_TIME": start.strftime("%Y-%m-%d %H:%M"),
-        "STOP_TIME": stop.strftime("%Y-%m-%d %H:%M"),
+        "START_TIME": f"'{start.strftime('%Y-%b-%d %H:%M')}'",
+        "STOP_TIME": f"'{stop.strftime('%Y-%b-%d %H:%M')}'",
         "STEP_SIZE": "2 h",
     }
 
