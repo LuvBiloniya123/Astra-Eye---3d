@@ -372,7 +372,7 @@ async def horizons_position(designation: str):
         "CSV_FORMAT": "YES",
         "START_TIME": f"'{now.strftime('%Y-%b-%d %H:%M')}'",
         "STOP_TIME": f"'{stop.strftime('%Y-%b-%d %H:%M')}'",
-        "STEP_SIZE": "1 m",
+        "STEP_SIZE": "'1 min'",
     }
 
     try:
@@ -499,7 +499,7 @@ async def horizons_trail(designation: str):
         "CSV_FORMAT": "YES",
         "START_TIME": f"'{start.strftime('%Y-%b-%d %H:%M')}'",
         "STOP_TIME": f"'{stop.strftime('%Y-%b-%d %H:%M')}'",
-        "STEP_SIZE": "2 h",
+        "STEP_SIZE": "'2 h'",
     }
 
     try:
